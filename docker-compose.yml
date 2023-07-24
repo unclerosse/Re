@@ -1,0 +1,26 @@
+services:
+  postgres-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?database password not set!}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  app:
+    build:
+      context: .
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?database password not set!}
+      JWT_AUTH_KEY: ${JWT_AUTH_KEY:?jwt auth key not set!}
+      PEPPER: ${PEPPER:?pepper password not set!}
+    ports:
+      - 5050:80
+    depends_on:
+      - postgres-db
+volumes:
+  postgres-data:
